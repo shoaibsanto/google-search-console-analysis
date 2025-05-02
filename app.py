@@ -75,7 +75,7 @@ def add_keyword_metrics(df, include_metrics, api_key, user_id, country_code):
     return df
 
 # Update all analysis functions to include country_code parameter
-def show_top_performing(data, n=20, include_metrics=False, api_key=None, user_id=None, country_code=None):
+def show_top_performing(data, n=20):
     st.markdown("---")
     st.subheader(f"Top {n} Performing Queries")
     top_queries = data.sort_values(by='Clicks', ascending=False).head(n)
@@ -368,14 +368,14 @@ def main():
                 st.write("Data successfully loaded and processed.")
                 
                 # Main content
-                show_top_performing(gsc_data, top_n, include_metrics, api_key, user_id, country_code)
-                show_opportunities(gsc_data, min_impressions, max_position_opp, include_metrics, api_key, user_id, country_code)
-                show_quick_wins(gsc_data, min_position_quick, max_position_quick, min_impressions, include_metrics, api_key, user_id, country_code)
+                show_top_performing(gsc_data, top_n)
+                show_opportunities(gsc_data, min_impressions, max_position_opp)
+                show_quick_wins(gsc_data, min_position_quick, max_position_quick, min_impressions)
                 generate_word_cloud(gsc_data)
                 
                 # Additional features
-                highlight_low_hanging_fruits(gsc_data, include_metrics, api_key, user_id, country_code)
-                identify_question_queries(gsc_data, include_metrics, api_key, user_id, country_code)
+                highlight_low_hanging_fruits(gsc_data)
+                identify_question_queries(gsc_data)
                 estimate_traffic_potential(gsc_data)
                 
                 # Country-specific analysis

@@ -75,7 +75,7 @@ def add_keyword_metrics(df, include_metrics, api_key, user_id, country_code):
     return df
 
 # Update all analysis functions to include country_code parameter
-def show_top_performing(data, n=20):
+def show_top_performing(data, n=20, include_metrics=False, api_key=None, user_id=None, country_code=None):
     st.markdown("---")
     st.subheader(f"Top {n} Performing Queries")
     top_queries = data.sort_values(by='Clicks', ascending=False).head(n)
@@ -348,6 +348,27 @@ def main():
     min_position_quick = st.sidebar.slider("Minimum Position for Quick Wins", 5, 20, 11)
     max_position_quick = st.sidebar.slider("Maximum Position for Quick Wins", 20, 50, 20)
     
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("⭐ For Power Members")
+
+    # Checkbox for keyword metrics
+    include_metrics = st.sidebar.checkbox("Include additional keyword metrics")
+    
+    api_key = None
+    user_id = None
+    country_code = None
+    if include_metrics:
+        api_key = st.sidebar.text_input("Enter your API Key", type="password")
+        user_id = st.sidebar.text_input("Enter your User ID")
+        country_options = {
+            "United States": "US","United Kingdom": "UK","India": "IN", "Argentina": "AR", "Australia": "AU", "Brazil": "BR", "Canada": "CA", 
+            "Germany": "DE", "Spain": "ES", "France": "FR", "Ireland": "IE", 
+             "Italy": "IT", "Mexico": "MX", "Netherlands": "NL", 
+            "New Zealand": "NZ", "Singapore": "SG", "Ukraine": "UA", 
+             "South Africa": "ZA"
+        }
+        country_name = st.sidebar.selectbox("Select Country", list(country_options.keys()))
+        country_code = country_options[country_name]
     
     # Button to start analysis
     start_analysis = st.button("Start Analysis")
@@ -368,14 +389,14 @@ def main():
                 st.write("Data successfully loaded and processed.")
                 
                 # Main content
-                show_top_performing(gsc_data, top_n)
-                show_opportunities(gsc_data, min_impressions, max_position_opp)
-                show_quick_wins(gsc_data, min_position_quick, max_position_quick, min_impressions)
+                show_top_performing(gsc_data, top_n, include_metrics, api_key, user_id, country_code)
+                show_opportunities(gsc_data, min_impressions, max_position_opp, include_metrics, api_key, user_id, country_code)
+                show_quick_wins(gsc_data, min_position_quick, max_position_quick, min_impressions, include_metrics, api_key, user_id, country_code)
                 generate_word_cloud(gsc_data)
                 
                 # Additional features
-                highlight_low_hanging_fruits(gsc_data)
-                identify_question_queries(gsc_data)
+                highlight_low_hanging_fruits(gsc_data, include_metrics, api_key, user_id, country_code)
+                identify_question_queries(gsc_data, include_metrics, api_key, user_id, country_code)
                 estimate_traffic_potential(gsc_data)
                 
                 # Country-specific analysis
